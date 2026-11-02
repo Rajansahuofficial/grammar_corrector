@@ -9,6 +9,6 @@ urlpatterns = [
     # path('check_even/',check_even),
     # path("comp2path",comp2),
     path("", home),
-    path("comp3path",comp3),
+    path("comp3path/",comp3),
 ]
 

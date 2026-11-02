@@ -24,7 +24,7 @@ def comp3(request):
 
         try:
             # 60s HTTP timeout so it fails cleanly instead of hanging
-            client = genai.Client(http_options={"timeout": 60})
+            client = genai.Client()
 
             response = client.models.generate_content(
                 model="gemini-flash-latest", contents=prompt
@@ -42,6 +42,6 @@ def comp3(request):
     else:
         return JsonResponse({"error": "only post allowed."})
 
-
+@csrf_exempt
 def home(request):
     return render(request, 'test1/index.html')
