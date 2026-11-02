@@ -23,8 +23,8 @@ def comp3(request):
         {sentence}"""
 
         try:
-            # Client picks up GEMINI_API_KEY from environment automatically
-            client = genai.Client()
+            # 60s HTTP timeout so it fails cleanly instead of hanging
+            client = genai.Client(http_options={"timeout": 60})
 
             response = client.models.generate_content(
                 model="gemini-flash-latest", contents=prompt
