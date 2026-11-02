@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: free
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
-    startCommand: "gunicorn dev_cv.wsgi:application"
+    startCommand: "gunicorn dev_cv.wsgi:application --timeout 120 --workers 2"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true

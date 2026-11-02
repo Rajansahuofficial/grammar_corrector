@@ -1,110 +1,47 @@
-from django.http import HttpResponse,JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-import json 
+import json
 from google import genai
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 load_dotenv()
 
 
-# def comp(request):
-#     a="trying"
-#     b="executed"
-#     return HttpResponse("accepted"+a+b)
-
-# def dicto(request):
-
-#     student ={
-#     "name": "Raj",
-
-#             }
-#     print(request.GET.get("kilo"))
-#     print(request.GET.get("permole"))
-#     return JsonResponse(student)
-    
-
-# def is_even(number):
-#     return number%2==0
-# @csrf_exempt
-# def check_even(request):
-#     # print(request.method)
-#     # print(request.body)
-
-
-#     if request.method=="POST":
-#         data=json.loads(request.body)
-#         print(data)
-#         number=int(request.GET.get("number"))
-#         return JsonResponse({
-#             "number": number,
-#             "is_even": is_even(number)
-            
-#         })
-#     else:
-#         return JsonResponse({"reason":"only post request allowed",})
-    
-# #2nd learning days
-# @csrf_exempt
-# def comp2(request):
-#     if request.method=="POST":
-#         body=json.loads(request.body)
-#         print(body)
-#         name =body.get("name")
-
-
-#         data_respond={
-#             "mssg": f"Hello {name}",
-#             "status":"success"
-#         }
-#         return JsonResponse(data_respond)
-
-#     else:
-#         return JsonResponse({"error":"only post allowed",})
-    
-#3rd day learning 
 @csrf_exempt
 def comp3(request):
-    if request.method=="POST":
-        body=json.loads(request.body)
+    if request.method == "POST":
+        body = json.loads(request.body)
         print(body)
 
-        sentence=body.get("sentence")
+        sentence = body.get("sentence")
 
         if not sentence:
-            return JsonResponse({"error":"kindly provide sentence"})
-        
+            return JsonResponse({"error": "kindly provide sentence"})
 
+        prompt = f"""You are an expert in grammar.
+        Analyse the following sentence and provide a short, precise grammar correction:
+        {sentence}"""
 
+        try:
+            # Client picks up GEMINI_API_KEY from environment automatically
+            client = genai.Client()
 
+            response = client.models.generate_content(
+                model="gemini-flash-latest", contents=prompt
+            )
+            corrected_text = response.text
+            return JsonResponse({
+                "corrected_sentence": corrected_text,
+                "status": "success"
+            })
 
-        prompt = f"""you are an expert in grammer , 
-        and you have been given a sentence to analyse 
-        in an appropriate manner according to grammer in short precise ,
-        this is the data:
-        {sentence} """
-        # The client gets the API key from the environment variable `GEMINI_API_KEY`.
-        client = genai.Client()
+        except Exception as e:
+            print(f"Gemini API error: {e}")
+            return JsonResponse({"error": str(e), "status": "error"}, status=500)
 
-        response = client.models.generate_content(
-            model="gemini-flash-latest", contents=prompt
-        )
-        corrected_text = response.text
-        data_respond = {
-                    "corrected_sentence": corrected_text,
-                    "status": "success"
-                }
-        '''return JsonResponse(data_respond)
-        data_respond = {
-            "corrected_sentence": corrected_text,
-            "status": "success"
-        }'''
-
-        return JsonResponse(data_respond)
     else:
-        return JsonResponse({"error":"only post allowed."})  
-
+        return JsonResponse({"error": "only post allowed."})
 
 
 def home(request):
     return render(request, 'test1/index.html')
-
