@@ -1,4 +1,5 @@
 from django.http import HttpResponse,JsonResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json 
 from google import genai
@@ -105,5 +106,5 @@ def comp3(request):
 
 
 def home(request):
-    return HttpResponse("Grammar Corrector API Running")
+    return render(request, 'test1/index.html')
 
