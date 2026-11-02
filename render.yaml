@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: grammar-corrector
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+    startCommand: "gunicorn dev_cv.wsgi:application"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: DEBUG
+        value: "False"
